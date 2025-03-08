@@ -98,23 +98,87 @@ document.addEventListener('DOMContentLoaded', async () => {
     // 处理长URL
     const processUrl = (url) => {
       try {
-        // 尝试解码URL，以防它已经被编码
-        return decodeURIComponent(url);
+        // 1. 尝试完全解码URL
+        let decodedUrl = decodeURIComponent(url);
+        
+        // 2. 解析URL对象
+        const urlObj = new URL(decodedUrl);
+        
+        // 3. 获取并处理查询参数
+        const searchParams = new URLSearchParams(urlObj.search);
+        for (let [key, value] of searchParams.entries()) {
+          // 解码参数值中的转义字符
+          const decodedValue = value
+            .replace(/%20/g, ' ')           // 空格
+            .replace(/%0A/g, '\n')         // 换行
+            .replace(/%2C/g, ',')          // 逗号
+            .replace(/%3A/g, ':')          // 冒号
+            .replace(/%2F/g, '/')          // 斜杠
+            .replace(/%5C/g, '\\')         // 反斜杠
+            .replace(/%25/g, '%')          // 百分号
+            .replace(/%24/g, '$')          // 美元符号
+            .replace(/%2E/g, '.')          // 点
+            .replace(/%27/g, "'")          // 单引号
+            .replace(/%22/g, '"')          // 双引号
+            .replace(/%28/g, '(')          // 左括号
+            .replace(/%29/g, ')')          // 右括号
+            .replace(/%3F/g, '?')          // 问号
+            .replace(/%3D/g, '=')          // 等号
+            .replace(/%26/g, '&')          // &符号
+            .replace(/%40/g, '@');         // @符号
+          
+          searchParams.set(key, decodedValue);
+        }
+        
+        // 4. 重建URL
+        urlObj.search = searchParams.toString();
+        return urlObj.toString();
+        
       } catch (e) {
-        // 如果解码失败，返回原始URL
+        console.warn('URL processing failed:', e);
+        // 如果处理失败，返回原始URL
         return url;
       }
     };
 
     // 创建二维码
-    new QRCode(qrcodeContainer, {
-      text: processUrl(url),
-      width: 200,
-      height: 200,
-      colorDark: '#000000',
-      colorLight: '#ffffff',
-      correctLevel: QRCode.CorrectLevel.H // 使用最高纠错级别
-    });
+    const processedUrl = processUrl(url);
+    console.log('Original URL length:', url.length);
+    console.log('Processed URL length:', processedUrl.length);
+    
+    // 根据URL长度动态调整二维码参数
+    let qrSize = 200;
+    let errorLevel = QRCode.CorrectLevel.H;
+    
+    if (processedUrl.length > 1024) {
+      qrSize = 400; // 增加尺寸
+      errorLevel = QRCode.CorrectLevel.M; // 降低纠错级别
+    }
+    
+    // 尝试生成二维码，如果失败则降低要求重试
+    try {
+      new QRCode(qrcodeContainer, {
+        text: processedUrl,
+        width: qrSize,
+        height: qrSize,
+        colorDark: '#000000',
+        colorLight: '#ffffff',
+        correctLevel: errorLevel
+      });
+    } catch (e) {
+      console.warn('First QR code generation attempt failed, trying with lower error correction:', e);
+      // 清除容器
+      qrcodeContainer.innerHTML = '';
+      // 使用最低纠错级别重试
+      new QRCode(qrcodeContainer, {
+        text: processedUrl,
+        width: 400,
+        height: 400,
+        colorDark: '#000000',
+        colorLight: '#ffffff',
+        correctLevel: QRCode.CorrectLevel.L
+      });
+    }
 
     // 确保二维码生成成功
     const qrImage = qrcodeContainer.querySelector('img');
