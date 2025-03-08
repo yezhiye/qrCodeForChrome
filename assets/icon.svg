@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg width="128px" height="128px" viewBox="0 0 128 128" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" style="enable-background:new 0 0 128 128;">
+  <defs>
+    <style type="text/css">
+      .qr-bg { fill: #007AFF; }
+      .qr-pattern { fill: #FFFFFF; }
+      .qr-inner { fill: #007AFF; }
+    </style>
+  </defs>
+  
+  <!-- 背景圆形 -->
+  <circle class="qr-bg" cx="64" cy="64" r="60"/>
+  
+  <!-- QR码样式图案 -->
+  <g class="qr-pattern" transform="translate(32, 32)">
+    <!-- 左上角方块图案 -->
+    <path d="M0,0h16v16H0V0z M4,4h8v8H4V4z"/>
+    <rect class="qr-inner" x="4" y="4" width="8" height="8"/>
+    
+    <!-- 右上角方块图案 -->
+    <path d="M48,0h16v16H48V0z M52,4h8v8h-8V4z"/>
+    <rect class="qr-inner" x="52" y="4" width="8" height="8"/>
+    
+    <!-- 左下角方块图案 -->
+    <path d="M0,48h16v16H0V48z M4,52h8v8H4V52z"/>
+    <rect class="qr-inner" x="4" y="52" width="8" height="8"/>
+    
+    <!-- 中间装饰图案 -->
+    <path d="M24,24h16v16H24V24z M28,28h8v8h-8V28z"/>
+    <rect class="qr-inner" x="28" y="28" width="8" height="8"/>
+    
+    <!-- 连接线条 -->
+    <rect x="20" y="0" width="4" height="64"/>
+    <rect x="40" y="0" width="4" height="64"/>
+    <rect x="0" y="20" width="64" height="4"/>
+    <rect x="0" y="40" width="64" height="4"/>
+  </g>
+</svg> 

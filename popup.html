@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>网页二维码</title>
+  <style>
+    body {
+      width: 320px;
+      padding: 20px;
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background: #ffffff;
+    }
+
+    .container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .qr-wrapper {
+      position: relative;
+      width: 200px;
+      height: 200px;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      padding: 16px;
+      transition: all 0.3s ease;
+    }
+
+    .qr-wrapper:hover {
+      transform: scale(1.02);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    #qrcode {
+      width: 200px;
+      height: 200px;
+    }
+
+    #qrcode img {
+      width: 100%;
+      height: 100%;
+    }
+
+    .favicon-overlay {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 32px;
+      height: 32px;
+      background: white;
+      border-radius: 6px;
+      padding: 4px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      z-index: 10;
+    }
+
+    #favicon {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    .site-info {
+      text-align: center;
+      color: #333;
+      font-size: 14px;
+      font-weight: 500;
+      max-width: 100%;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .loading {
+      width: 200px;
+      height: 200px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #f5f5f7;
+      border-radius: 12px;
+    }
+
+    .loading::after {
+      content: "";
+      width: 32px;
+      height: 32px;
+      border: 3px solid #007AFF;
+      border-radius: 50%;
+      border-top-color: transparent;
+      animation: spin 1s linear infinite;
+    }
+
+    .error-message {
+      color: #ff3b30;
+      text-align: center;
+      padding: 20px;
+      font-size: 14px;
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+  </style>
+  <script src="qrcode.min.js"></script>
+</head>
+<body>
+  <div class="container">
+    <div class="qr-wrapper">
+      <div id="qrcode"></div>
+      <div class="favicon-overlay">
+        <img id="favicon" alt="网站图标">
+      </div>
+    </div>
+    <div class="site-info" id="site-name"></div>
+  </div>
+  <script src="popup.js"></script>
+</body>
+</html> 
