@@ -5,11 +5,11 @@
   <title>网页二维码</title>
   <style>
     body {
-      width: 440px;
       padding: 20px;
       margin: 0;
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
       background: #ffffff;
+      min-width: 240px;
     }
 
     .container {
@@ -21,8 +21,6 @@
 
     .qr-wrapper {
       position: relative;
-      width: 400px;
-      height: 400px;
       background: white;
       border-radius: 12px;
       box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
@@ -39,17 +37,14 @@
     }
 
     #qrcode {
-      width: 400px;
-      height: 400px;
       display: flex;
       align-items: center;
       justify-content: center;
     }
 
     #qrcode img {
+      display: block;
       max-width: 100%;
-      max-height: 100%;
-      width: auto !important;
       height: auto !important;
     }
 
@@ -58,10 +53,10 @@
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      width: 60px;
-      height: 60px;
+      width: 48px;
+      height: 48px;
       background: white;
-      border-radius: 12px;
+      border-radius: 10px;
       padding: 6px;
       box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
       z-index: 10;
@@ -73,13 +68,25 @@
       backdrop-filter: blur(4px);
     }
 
+    /* 为大尺寸二维码设置更大的图标 */
+    .qr-wrapper.large .favicon-overlay {
+      width: 60px;
+      height: 60px;
+      border-radius: 12px;
+    }
+
     #favicon {
-      width: 48px;
-      height: 48px;
+      width: 36px;
+      height: 36px;
       object-fit: contain;
       opacity: 0;
       transition: all 0.3s ease;
       border-radius: 6px;
+    }
+
+    .qr-wrapper.large #favicon {
+      width: 48px;
+      height: 48px;
     }
 
     #favicon.loaded {
@@ -91,10 +98,11 @@
       color: #333;
       font-size: 14px;
       font-weight: 500;
-      max-width: 280px;
+      max-width: 90%;
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
+      margin: 0 auto;
     }
 
     .loading {

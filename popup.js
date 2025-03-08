@@ -154,6 +154,20 @@ document.addEventListener('DOMContentLoaded', async () => {
       qrSize = 400; // 增加尺寸
       errorLevel = QRCode.CorrectLevel.M; // 降低纠错级别
     }
+
+    // 获取二维码容器
+    const qrWrapper = document.querySelector('.qr-wrapper');
+
+    // 根据二维码尺寸调整容器大小
+    qrWrapper.style.width = `${qrSize}px`;
+    document.body.style.width = `${qrSize + 40}px`; // 40px 是左右padding的总和
+
+    // 根据尺寸添加大小类名
+    if (qrSize > 200) {
+      qrWrapper.classList.add('large');
+    } else {
+      qrWrapper.classList.remove('large');
+    }
     
     // 尝试生成二维码，如果失败则降低要求重试
     try {
@@ -172,8 +186,8 @@ document.addEventListener('DOMContentLoaded', async () => {
       // 使用最低纠错级别重试
       new QRCode(qrcodeContainer, {
         text: processedUrl,
-        width: 400,
-        height: 400,
+        width: qrSize,
+        height: qrSize,
         colorDark: '#000000',
         colorLight: '#ffffff',
         correctLevel: QRCode.CorrectLevel.L
@@ -191,7 +205,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     qrImage.style.height = '100%';
 
     // 添加鼠标悬停效果
-    const qrWrapper = document.querySelector('.qr-wrapper');
     qrWrapper.addEventListener('mouseover', () => {
       qrWrapper.style.transform = 'scale(1.02)';
     });
