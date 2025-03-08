@@ -7,17 +7,88 @@ document.addEventListener('DOMContentLoaded', async () => {
     // 获取网页信息
     const url = tab.url;
     const title = tab.title;
-    const faviconUrl = tab.favIconUrl || 'assets/default-favicon.png';
 
     // 更新网站名称
     document.getElementById('site-name').textContent = title;
 
-    // 更新favicon
+    // 处理favicon
+    const faviconOverlay = document.querySelector('.favicon-overlay');
     const faviconImg = document.getElementById('favicon');
-    faviconImg.src = faviconUrl;
-    faviconImg.onerror = () => {
-      faviconImg.src = 'assets/default-favicon.png';
+    
+    // 尝试获取favicon的不同来源
+    const getFaviconUrl = (url) => {
+      try {
+        const urlObj = new URL(url);
+        return `${urlObj.protocol}//${urlObj.hostname}/favicon.ico`;
+      } catch (e) {
+        return null;
+      }
     };
+
+    const loadFavicon = async (faviconUrl) => {
+      return new Promise((resolve) => {
+        if (!faviconUrl) {
+          resolve(false);
+          return;
+        }
+
+        const img = new Image();
+        img.onload = () => resolve(true);
+        img.onerror = () => resolve(false);
+        img.src = faviconUrl;
+      });
+    };
+
+    // 按优先级尝试不同的favicon来源
+    const tryFavicons = async () => {
+      // 1. 首先尝试Chrome API提供的favicon
+      if (tab.favIconUrl && await loadFavicon(tab.favIconUrl)) {
+        return tab.favIconUrl;
+      }
+
+      // 2. 尝试网站根目录的favicon.ico
+      const rootFavicon = getFaviconUrl(url);
+      if (rootFavicon && await loadFavicon(rootFavicon)) {
+        return rootFavicon;
+      }
+
+      // 3. 如果都失败了，返回null
+      return null;
+    };
+
+    // 设置favicon
+    const setFavicon = async () => {
+      const faviconUrl = await tryFavicons();
+      
+      if (!faviconUrl) {
+        // 如果没有可用的图标，直接隐藏图标容器
+        faviconOverlay.style.display = 'none';
+        return;
+      }
+
+      // 重置显示状态
+      faviconOverlay.style.display = 'flex';
+      faviconOverlay.style.opacity = '0';
+      faviconImg.style.opacity = '0';
+      
+      // 设置图标
+      faviconImg.src = faviconUrl;
+      
+      // 图标加载成功时显示
+      faviconImg.onload = () => {
+        faviconImg.style.opacity = '1';
+        faviconOverlay.style.opacity = '1';
+        faviconImg.classList.add('loaded');
+      };
+      
+      // 图标加载失败时隐藏
+      faviconImg.onerror = () => {
+        faviconOverlay.style.display = 'none';
+      };
+    };
+
+    // 异步加载favicon
+    await setFavicon();
 
     // 创建二维码容器
     const qrcodeContainer = document.getElementById('qrcode');
